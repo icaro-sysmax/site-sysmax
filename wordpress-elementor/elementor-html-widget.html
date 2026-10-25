@@ -1,0 +1,80 @@
+<!--
+  SYSMAX TECNOLOGIA & TELEFONIA - MODELO DE PÁGINA PARA ELEMENTOR
+  ==============================================================
+  Este widget HTML foi configurado para ser 100% editável no painel lateral do Elementor.
+  
+  COMO EDITAR NO ELEMENTOR:
+  1. No painel esquerdo do Elementor, clique no widget "HTML".
+  2. Altere o caminho dos scripts se hospedar em pasta diferente de /wp-content/uploads/sysmax/assets/.
+  3. Você pode adicionar outros widgets do Elementor acima ou abaixo desta seção livremente.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Folha de Estilos Tailwind CSS compilada da Sysmax -->
+<link rel="stylesheet" href="/wp-content/uploads/sysmax/assets/index-r9ALmmFn.css" id="sysmax-compiled-css">
+
+<!-- Fallback inteligente caso os assets estejam na raiz ou subpasta -->
+<script>
+  (function() {
+    // Detecta se os assets estão em /wp-content/uploads/sysmax/assets/ ou em caminho alternativo
+    var testCss = document.getElementById('sysmax-compiled-css');
+    if (testCss) {
+      testCss.onerror = function() {
+        console.warn('Sysmax: Tentando carregar assets de caminho relativo alternativo...');
+        var altCss = document.createElement('link');
+        altCss.rel = 'stylesheet';
+        altCss.href = './assets/index-r9ALmmFn.css';
+        document.head.appendChild(altCss);
+      };
+    }
+  })();
+</script>
+
+<!-- Container Raiz da Aplicação Sysmax (Montagem do React 19) -->
+<div id="root" class="sysmax-app-container bg-[#0B132B] text-slate-100 font-sans antialiased min-h-screen">
+  <!-- Fallback de carregamento visual para pré-visualização no editor do Elementor -->
+  <div style="background-color: #0B132B; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #38bdf8; font-family: sans-serif; text-align: center; padding: 40px 20px;">
+    <div style="width: 50px; height: 50px; border: 3px solid rgba(56, 189, 248, 0.2); border-top-color: #38bdf8; border-radius: 50%; animation: sysmaxSpin 1s linear infinite; margin-bottom: 20px;"></div>
+    <h2 style="color: #ffffff; font-size: 24px; font-weight: 800; margin: 0 0 10px 0;">SYSMAX TELEFONIA & TI</h2>
+    <p style="color: #94a3b8; font-size: 14px; max-width: 480px; margin: 0;">Carregando plataforma corporativa com PABX em Nuvem, WhatsApp Calling, Cloud Server, Locação de TI e Outsourcing de Impressão...</p>
+    <style>
+      @keyframes sysmaxSpin { to { transform: rotate(360deg); } }
+    </style>
+  </div>
+</div>
+
+<!-- Bundle JavaScript Interativo da Aplicação -->
+<script type="module" src="/wp-content/uploads/sysmax/assets/index-CZ_pTGFI.js" id="sysmax-compiled-js"></script>
+
+<!-- Estilos Globais para garantir Compatibilidade com Temas WordPress e Elementor Canvas -->
+<style>
+  /* Reset de conflitos com temas WordPress (Astra, Hello Elementor, Divi, etc.) */
+  html, body {
+    background-color: #0B132B !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+  }
+  .elementor-section.elementor-section-boxed > .elementor-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .elementor-widget-html,
+  .elementor-widget-html .elementor-widget-container {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .elementor-page .elementor-inner {
+    padding: 0 !important;
+  }
+  /* Estilização para o painel de edição do Elementor */
+  .elementor-editor-active .sysmax-app-container {
+    outline: 2px dashed rgba(56, 189, 248, 0.4);
+    outline-offset: -2px;
+  }
+</style>
