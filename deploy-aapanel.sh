@@ -33,9 +33,8 @@ fi
 
 # 2. Verificar ambiente Node.js / NPM para compilação
 if command -v npm >/dev/null 2>&1; then
-    echo "📦 Node.js e NPM detectados: $(node -v) / NPM $(npm -v)"
-    echo "⚡ Instalando dependências..."
-    npm install --no-audit --prefer-offline || npm install
+    echo "⚡ Instalando dependências (com --legacy-peer-deps para compatibilidade total)..."
+    npm install --legacy-peer-deps --no-audit || npm install --force
     
     echo "🏗️ Compilando assets de produção, template Elementor e versão HTML..."
     npm run build

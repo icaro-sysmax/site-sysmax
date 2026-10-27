@@ -134,6 +134,27 @@ Se você deseja hospedar o site em uma hospedagem que não suporta Node.js ou pr
 
 ---
 
+## ⚠️ Resolução de Erros Comuns
+
+### Erro `ERESOLVE could not resolve` no `npm install`
+Se o seu servidor aaPanel tiver uma versão do NPM que valide rigorosamente peer dependencies (ex: `esbuild` vs `vite`), você tem 2 formas imediatas de resolver:
+
+1. **Atualizar o repositório (`git pull`)**:
+   O repositório já foi corrigido com o arquivo `.npmrc` (`legacy-peer-deps=true`) e a remoção da dependência conflitante no `package.json`.
+   ```bash
+   git pull origin main
+   npm install
+   ```
+
+2. **Se preferir rodar manualmente sem atualizar o Git agora**:
+   ```bash
+   npm install --legacy-peer-deps
+   # e em seguida
+   npm run build
+   ```
+
+---
+
 ## 📞 Contatos & Suporte Sysmax
 - **Telefone Oficial**: (61) 4042-8042
 - **WhatsApp Direto**: +55 (61) 4042-8042
