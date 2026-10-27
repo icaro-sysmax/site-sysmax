@@ -13,11 +13,12 @@ import {
   Cloud,
   Laptop,
   Printer,
+  Globe,
 } from 'lucide-react';
 
 interface HeaderProps {
-  currentView: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao';
-  onNavigate: (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao') => void;
+  currentView: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites';
+  onNavigate: (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites') => void;
   onOpenQuote: (service?: string) => void;
 }
 
@@ -106,6 +107,15 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
     { label: 'Cotação', href: '#contato-impressao' },
   ];
 
+  const sitesNavLinks = [
+    { label: 'Pilares', href: '#main-content' },
+    { label: 'Modelos de Sites', href: '#main-content' },
+    { label: 'Metodologia', href: '#main-content' },
+    { label: 'Simulador', href: '#simulador-site' },
+    { label: 'FAQ', href: '#contato-site' },
+    { label: 'Orçamento', href: '#contato-site' },
+  ];
+
   let currentNavLinks = telephonyNavLinks;
   if (currentView === 'whatsapp-calling') currentNavLinks = whatsappNavLinks;
   if (currentView === 'ti') currentNavLinks = itNavLinks;
@@ -113,6 +123,7 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
   if (currentView === 'cloud') currentNavLinks = cloudNavLinks;
   if (currentView === 'locacao') currentNavLinks = locacaoNavLinks;
   if (currentView === 'impressao') currentNavLinks = impressaoNavLinks;
+  if (currentView === 'criacao-sites') currentNavLinks = sitesNavLinks;
 
   return (
     <header
@@ -505,6 +516,58 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                         </button>
                       </div>
                     </div>
+
+                    {/* Section 5: Marketing Digital */}
+                    <div className="p-3">
+                      <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-cyan-400 flex items-center justify-between">
+                        <span>Marketing Digital</span>
+                        <span className="text-[9px] text-slate-400 font-normal">Presença & Vendas Online</span>
+                      </div>
+
+                      <div className="mt-1 space-y-1">
+                        {/* Sub-item: Criação de Sites */}
+                        <button
+                          onClick={() => {
+                            onNavigate('criacao-sites');
+                            setServicesDropdownOpen(false);
+                          }}
+                          className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left group ${
+                            currentView === 'criacao-sites'
+                              ? 'bg-cyan-500/10 border border-cyan-500/30'
+                              : 'hover:bg-slate-800/70 border border-transparent'
+                          }`}
+                        >
+                          <div
+                            className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                              currentView === 'criacao-sites'
+                                ? 'bg-cyan-500 text-slate-950 font-bold'
+                                : 'bg-slate-800 text-teal-400 group-hover:bg-teal-500/20'
+                            }`}
+                          >
+                            <Globe className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-bold text-white group-hover:text-cyan-300">
+                                Criação de Sites
+                              </span>
+                              {currentView === 'criacao-sites' ? (
+                                <span className="text-[10px] font-semibold text-cyan-400 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-800/40">
+                                  Ativo
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/70 px-1.5 py-0.5 rounded border border-emerald-800/50">
+                                  SEO & Alta Conversão
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-slate-400 mt-0.5 leading-snug">
+                              Sites institucionais, landing pages e lojas virtuais 100% autogerenciáveis, rápidos e focados em vendas.
+                            </p>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="bg-slate-950/90 py-2.5 px-4 flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-800">
@@ -770,6 +833,34 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                       </div>
                       <div className={`text-[10px] ${currentView === 'impressao' ? 'text-slate-900' : 'text-slate-400'}`}>
                         Multifuncionais laser, toners inclusos e bilhetagem
+                      </div>
+                    </div>
+                  </button>
+
+                  <div className="text-[10px] font-bold text-cyan-400 px-2 pt-2 uppercase">Marketing Digital</div>
+
+                  {/* Sub-item: Criação de Sites */}
+                  <button
+                    onClick={() => {
+                      onNavigate('criacao-sites');
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-left text-xs ${
+                      currentView === 'criacao-sites'
+                        ? 'bg-cyan-500 text-slate-950 font-bold'
+                        : 'text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <Globe className="w-4 h-4" />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold">Criação de Sites</span>
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
+                          SEO
+                        </span>
+                      </div>
+                      <div className={`text-[10px] ${currentView === 'criacao-sites' ? 'text-slate-900' : 'text-slate-400'}`}>
+                        Sites institucionais, landing pages e e-commerce
                       </div>
                     </div>
                   </button>

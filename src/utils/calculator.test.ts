@@ -13,6 +13,7 @@ import {
   calculateCloudStoragePlan,
   calculateEquipmentRentalQuote,
   calculatePrintOutsourcingQuote,
+  calculateWebsiteQuote,
 } from './calculator';
 
 test('calculateITSupportPlan computes plans, SLA, and pricing accurately', () => {
@@ -278,4 +279,48 @@ test('calculatePrintOutsourcingQuote calculates print volume, toners, savings an
   assert.equal(compact.effectiveMonthlyCost, compact.monthlyRental);
   assert.ok(compact.monthlySavings > 0);
 });
+
+test('calculateWebsiteQuote calculates project pricing, timelines, features and installments accurately', () => {
+  // Test Institutional project with SEO and WhatsApp CRM
+  const inst = calculateWebsiteQuote({
+    projectType: 'institutional',
+    features: ['seo_advanced', 'whatsapp_crm'],
+    urgency: 'standard',
+  });
+
+  assert.equal(inst.projectType, 'institutional');
+  assert.equal(inst.basePrice, 1890);
+  assert.equal(inst.featuresPrice, 390 + 250);
+  assert.equal(inst.totalEstimatedPrice, 1890 + 390 + 250);
+  assert.ok(inst.estimatedBusinessDays >= 12);
+  assert.ok(inst.installmentOption.includes('10x'));
+  assert.ok(inst.deliverables.some((d) => d.includes('WordPress')));
+  assert.ok(inst.deliverables.some((d) => d.includes('LGPD')));
+
+  // Test E-commerce with express urgency
+  const ecom = calculateWebsiteQuote({
+    projectType: 'ecommerce',
+    features: ['seo_advanced', 'copywriting'],
+    urgency: 'express',
+  });
+
+  assert.equal(ecom.projectType, 'ecommerce');
+  assert.equal(ecom.basePrice, 3490);
+  assert.ok(ecom.totalEstimatedPrice > ecom.basePrice);
+  assert.ok(ecom.deliverables.some((d) => d.includes('pagamento')));
+  assert.ok(ecom.deliverables.some((d) => d.includes('frete')));
+  assert.ok(ecom.techStack.some((t) => t.includes('PHP 8.5')));
+
+  // Test Landing page
+  const lp = calculateWebsiteQuote({
+    projectType: 'landing_page',
+    features: ['whatsapp_crm'],
+    urgency: 'standard',
+  });
+
+  assert.equal(lp.projectType, 'landing_page');
+  assert.equal(lp.basePrice, 1290);
+  assert.ok(lp.deliverables.some((d) => d.includes('conversão')));
+});
+
 

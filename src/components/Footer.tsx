@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Phone, MessageSquare, Mail, MapPin, ShieldCheck, ArrowUp } from 'lucide-react';
 
 interface FooterProps {
-  onNavigate?: (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao') => void;
+  onNavigate?: (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites') => void;
 }
 
 export function Footer({ onNavigate }: FooterProps) {
@@ -12,7 +12,7 @@ export function Footer({ onNavigate }: FooterProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleNav = (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao') => {
+  const handleNav = (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites') => {
     if (onNavigate) {
       onNavigate(view);
     }
@@ -125,6 +125,12 @@ export function Footer({ onNavigate }: FooterProps) {
               TI Gerenciada
             </h4>
             <ul className="space-y-2.5">
+              <li>
+                <button onClick={() => handleNav('criacao-sites')} className="hover:text-emerald-300 transition-colors text-left text-emerald-400 font-bold flex items-center gap-1.5">
+                  <span>→ Criação de Sites (Web Design)</span>
+                  <span className="text-[9px] bg-emerald-950 px-1 py-0.2 rounded border border-emerald-800">Novo</span>
+                </button>
+              </li>
               <li>
                 <button onClick={() => handleNav('locacao')} className="hover:text-emerald-300 transition-colors text-left text-emerald-400 font-semibold flex items-center gap-1.5">
                   <span>→ Locação de TI (Notebooks)</span>

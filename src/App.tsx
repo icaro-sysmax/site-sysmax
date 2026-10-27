@@ -17,9 +17,10 @@ import { WhatsAppCallingView } from './components/WhatsAppCallingView';
 import { CloudFileServerView } from './components/CloudFileServerView';
 import { EquipmentRentalView } from './components/EquipmentRentalView';
 import { PrintOutsourcingView } from './components/PrintOutsourcingView';
+import { WebsiteCreationView } from './components/WebsiteCreationView';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao'>('telefonia');
+  const [currentView, setCurrentView] = useState<'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites'>('telefonia');
   const [selectedService, setSelectedService] = useState<string>('PABX Virtual em Nuvem');
   const [selectedExtensions, setSelectedExtensions] = useState<number>(5);
 
@@ -29,7 +30,9 @@ export default function App() {
       const params = new URLSearchParams(window.location.search);
       const servico = params.get('servico') || params.get('page');
 
-      if (hash.includes('impress') || hash.includes('outsourcing') || servico === 'impressao' || servico === 'outsourcing-impressao' || servico === 'locacao-impressoras') {
+      if (hash.includes('site') || hash.includes('marketing') || hash.includes('webdesign') || servico === 'criacao-sites' || servico === 'marketing-digital' || servico === 'sites') {
+        setCurrentView('criacao-sites');
+      } else if (hash.includes('impress') || hash.includes('outsourcing') || servico === 'impressao' || servico === 'outsourcing-impressao' || servico === 'locacao-impressoras') {
         setCurrentView('impressao');
       } else if (hash.includes('locacao') || hash.includes('haas') || hash.includes('equipamento') || servico === 'locacao' || servico === 'locacao-equipamentos') {
         setCurrentView('locacao');
@@ -51,9 +54,11 @@ export default function App() {
     return () => window.removeEventListener('hashchange', checkHashAndParams);
   }, []);
 
-  const handleNavigate = (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao') => {
+  const handleNavigate = (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites') => {
     setCurrentView(view);
-    if (view === 'impressao') {
+    if (view === 'criacao-sites') {
+      window.location.hash = 'criacao-sites';
+    } else if (view === 'impressao') {
       window.location.hash = 'outsourcing-impressao';
     } else if (view === 'locacao') {
       window.location.hash = 'locacao-equipamentos';
@@ -73,6 +78,7 @@ export default function App() {
 
   const scrollToContact = () => {
     let targetId = 'contato';
+    if (currentView === 'criacao-sites') targetId = 'contato-site';
     if (currentView === 'impressao') targetId = 'contato-impressao';
     if (currentView === 'locacao') targetId = 'contato-locacao';
     if (currentView === 'cloud') targetId = 'contato-cloud';
@@ -198,6 +204,15 @@ export default function App() {
             onSwitchToTelefonia={() => handleNavigate('telefonia')}
             onSwitchToTI={() => handleNavigate('ti')}
             onSwitchToEquipmentRental={() => handleNavigate('locacao')}
+          />
+        )}
+
+        {currentView === 'criacao-sites' && (
+          /* Dedicated Marketing Digital - Criação de Sites Page */
+          <WebsiteCreationView
+            onSwitchToTelefonia={() => handleNavigate('telefonia')}
+            onSwitchToTI={() => handleNavigate('ti')}
+            onSwitchToLocacao={() => handleNavigate('locacao')}
           />
         )}
       </main>

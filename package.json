@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && tsx scripts/generate-elementor-json.ts",
+    "build": "vite build && tsx scripts/generate-elementor-json.ts && tsx scripts/export-html-bundle.ts",
+    "build:html": "vite build && tsx scripts/export-html-bundle.ts",
     "start": "node server.ts",
     "preview": "tsx server.ts",
     "clean": "rm -rf dist server.js",

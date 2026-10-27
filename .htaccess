@@ -1,0 +1,70 @@
+# ==============================================================================
+# SYSMAX TECNOLOGIA - CONFIGURAÇÃO APACHE / LITESPEED / AAPANEL (PHP 8.5)
+# ==============================================================================
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Rota de download para template do Elementor
+  RewriteRule ^api/elementor-template\.json$ wordpress-elementor/sysmax-elementor-template.json [L]
+  RewriteRule ^elementor\.json$ wordpress-elementor/sysmax-elementor-template.json [L]
+
+  # 2. Servir arquivos estáticos do dist/ se existirem
+  RewriteCond %{DOCUMENT_ROOT}/dist/$1 -f
+  RewriteRule ^(.*)$ dist/$1 [L]
+
+  # 3. Se arquivo ou diretório físico existir na raiz, serve direto
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 4. Encaminha para index.php se existir, senão dist/index.html
+  RewriteCond %{DOCUMENT_ROOT}/index.php -f
+  RewriteRule ^ index.php [L,QSA]
+
+  RewriteCond %{DOCUMENT_ROOT}/dist/index.html -f
+  RewriteRule ^ dist/index.html [L]
+</IfModule>
+
+# Forçar PHP 8.5 no Apache / cPanel / aaPanel (se aplicável)
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php85 .php .php8 .phtml
+</IfModule>
+
+# Proteção contra visualização de arquivos do sistema e repositório Git
+<FilesMatch "^(\.env|\.git|\.user\.ini|package\.json|package-lock\.json|tsconfig\.json|vite\.config\.ts|server\.ts|leads\.log)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Cabeçalhos de Segurança
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Compressão Deflate / Gzip
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/plain text/html text/xml text/css application/xml application/xhtml+xml application/rss+xml application/javascript application/x-javascript application/json image/svg+xml
+</IfModule>
+
+# Cache de Navegador para Assets Compilados
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>

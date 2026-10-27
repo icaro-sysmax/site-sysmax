@@ -744,3 +744,127 @@ export function calculatePrintOutsourcingQuote(
     includedBenefits,
   };
 }
+
+export interface WebsiteQuoteInput {
+  projectType: 'landing_page' | 'institutional' | 'ecommerce' | 'portal_custom';
+  pagesCount?: number;
+  features?: string[];
+  urgency?: 'standard' | 'express';
+}
+
+export interface WebsiteQuoteResult {
+  projectType: 'landing_page' | 'institutional' | 'ecommerce' | 'portal_custom';
+  planName: string;
+  basePrice: number;
+  featuresPrice: number;
+  totalEstimatedPrice: number;
+  estimatedBusinessDays: number;
+  installmentOption: string;
+  deliverables: string[];
+  techStack: string[];
+  seoScoreProjected: string;
+}
+
+export function calculateWebsiteQuote(input: WebsiteQuoteInput): WebsiteQuoteResult {
+  const pType = input.projectType || 'institutional';
+  const features = input.features || [];
+  const urgency = input.urgency || 'standard';
+
+  // Base pricing based on Brazilian market references (ZagSites, SitesCWB, WebDesignBrasil, UpSites)
+  let basePrice = 1890;
+  let baseDays = 12;
+  let planName = 'Site Institucional Corporativo Pro';
+
+  if (pType === 'landing_page') {
+    basePrice = 1290;
+    baseDays = 7;
+    planName = 'Landing Page de Alta Conversão';
+  } else if (pType === 'ecommerce') {
+    basePrice = 3490;
+    baseDays = 22;
+    planName = 'Loja Virtual E-commerce Completa';
+  } else if (pType === 'portal_custom') {
+    basePrice = 4890;
+    baseDays = 30;
+    planName = 'Portal Personalizado & Catálogo Digital';
+  }
+
+  // Feature add-on pricing
+  const featurePricing: Record<string, { price: number; extraDays: number }> = {
+    seo_advanced: { price: 390, extraDays: 2 },
+    whatsapp_crm: { price: 250, extraDays: 1 },
+    blog: { price: 350, extraDays: 2 },
+    multilingual: { price: 590, extraDays: 3 },
+    corporate_emails: { price: 190, extraDays: 1 },
+    copywriting: { price: 450, extraDays: 2 },
+  };
+
+  let featuresPrice = 0;
+  let extraDays = 0;
+
+  for (const f of features) {
+    if (featurePricing[f]) {
+      featuresPrice += featurePricing[f].price;
+      extraDays += featurePricing[f].extraDays;
+    }
+  }
+
+  let totalDays = baseDays + extraDays;
+  let urgencyMultiplier = 1.0;
+
+  if (urgency === 'express') {
+    urgencyMultiplier = 1.25;
+    totalDays = Math.max(4, Math.round(totalDays * 0.65));
+  }
+
+  const totalEstimatedPrice = Math.round((basePrice + featuresPrice) * urgencyMultiplier);
+  const installmentVal = Math.round(totalEstimatedPrice / 10);
+  const installmentOption = `10x de R$ ${installmentVal.toLocaleString('pt-BR')} sem juros`;
+
+  const deliverables = [
+    'Design 100% exclusivo e responsivo (Mobile-First, Tablet e Desktop)',
+    'Painel administrativo WordPress intuitivo e autogerenciável',
+    'Otimização de velocidade Core Web Vitals (Tempo de carregamento < 2s)',
+    'Estrutura preparada para o Google (SEO On-page, Meta Tags, Sitemap e robots.txt)',
+    'Certificado de Segurança SSL (HTTPS) incluso gratuitamente',
+    'Integração direta com botão flutuante de WhatsApp e formulários anti-spam',
+    'Conformidade com a LGPD (Aviso de Cookies e Termos de Privacidade)',
+    'Treinamento em vídeo para sua equipe gerenciar o site sem custos mensais',
+  ];
+
+  if (pType === 'ecommerce') {
+    deliverables.push(
+      'Integração de meios de pagamento (Pix instantâneo, Cartão de Crédito em até 12x e Boleto)',
+      'Cálculo de frete automático (Correios, Melhor Envio, Jadlog e Motoboy DF)',
+      'Gestão visual de estoque, variações de produto e cupons de desconto'
+    );
+  }
+
+  if (pType === 'landing_page') {
+    deliverables.push(
+      'Copywriting persuasivo e gatilhos mentais estruturados para máxima conversão de leads',
+      'Integração com Meta Pixel (Facebook/Instagram Ads) e Google Tag Manager / GA4'
+    );
+  }
+
+  const techStack = [
+    'WordPress & Elementor Pro / PHP 8.5',
+    'HTML5 Semântico, CSS3 / Tailwind e JavaScript Moderno',
+    'Nginx / Apache HTTP/3 com Cache Avançado e CDN Cloudflare',
+    'Banco de Dados MySQL / MariaDB Otimizado',
+  ];
+
+  return {
+    projectType: pType,
+    planName,
+    basePrice,
+    featuresPrice,
+    totalEstimatedPrice,
+    estimatedBusinessDays: totalDays,
+    installmentOption,
+    deliverables,
+    techStack,
+    seoScoreProjected: '95+ no Google PageSpeed',
+  };
+}
+
