@@ -32,21 +32,33 @@ else
 fi
 
 # 2. Verificar ambiente Node.js / NPM para compilação
-if command -v npm >/dev/null 2>&1; then
-    echo "⚡ Instalando dependências (com --legacy-peer-deps para compatibilidade total)..."
+NODE_MAJOR=0
+if command -v node >/dev/null 2>&1; then
+    NODE_MAJOR=$(node -v 2>/dev/null | cut -d'.' -f1 | tr -d 'v')
+fi
+
+if [ "$NODE_MAJOR" -ge 20 ] 2>/dev/null; then
+    echo "📦 Node.js v${NODE_MAJOR} detectado (compatível com Vite 8)."
+    echo "⚡ Instalando dependências..."
     npm install --legacy-peer-deps --no-audit || npm install --force
     
     echo "🏗️ Compilando assets de produção, template Elementor e versão HTML..."
     npm run build
     echo "✅ Build concluído com sucesso!"
 else
-    echo "ℹ️ Node.js não detectado no servidor aaPanel."
-    if [ -d "dist" ] && [ -f "dist/index.html" ]; then
-        echo "✅ Diretório dist/ pré-compilado encontrado e pronto para uso."
-    elif [ -d "html-version" ] && [ -f "html-version/index.html" ]; then
-        echo "✅ Versão estática html-version/ pronta para uso."
+    if [ "$NODE_MAJOR" -gt 0 ] 2>/dev/null; then
+        echo "⚠️ Node.js v${NODE_MAJOR} detectado. O Vite 8 requer Node.js >= 20.x ou 22.x."
+        echo "💡 Para atualizar o Node.js no aaPanel: curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs"
     else
-        echo "⚠️ Atenção: Compile os arquivos localmente com 'npm run build' e envie a pasta dist/"
+        echo "ℹ️ Node.js não detectado no servidor aaPanel."
+    fi
+
+    if [ -d "dist" ] && [ -f "dist/index.html" ]; then
+        echo "✅ Utilizando diretório dist/ pré-compilado existente (Build ignorado com sucesso)."
+    elif [ -d "html-version" ] && [ -f "html-version/index.html" ]; then
+        echo "✅ Utilizando versão estática html-version/ pronta."
+    else
+        echo "⚠️ Não foi encontrado dist/ prévio. Atualize o Node.js para compilar no servidor."
     fi
 fi
 

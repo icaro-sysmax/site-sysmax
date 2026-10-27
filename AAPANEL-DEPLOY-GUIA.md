@@ -153,6 +153,30 @@ Se o seu servidor aaPanel tiver uma versão do NPM que valide rigorosamente peer
    npm run build
    ```
 
+### Erro `SyntaxError: Unexpected token '.'` / `module.enableCompileCache?.()` no `npm run build`
+Este erro ocorre porque a versão do **Node.js** instalada no seu servidor aaPanel é antiga (Node 14, 16 ou 18 inicial). O **Vite 8** utiliza recursos do JavaScript moderno suportados a partir do **Node.js 20 LTS** ou **Node.js 22 LTS**.
+
+**Como resolver (Escolha uma opção):**
+
+- **Opção A (Mais rápida - Sem precisar do Node.js no servidor)**:
+  Como a pasta `dist/` e a pasta `html-version/` já estão 100% compiladas no repositório, você **não precisa rodar `npm run build` no servidor**. O PHP 8.5 / Nginx já serve o site diretamente!
+  
+- **Opção B (Atualizar o Node.js no aaPanel via Terminal SSH - 1 comando)**:
+  ```bash
+  curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+  apt-get install -y nodejs
+  # Verifique se agora exibe v22.x:
+  node -v
+  # Agora rode o build:
+  npm run build
+  ```
+
+- **Opção C (Pelo painel visual do aaPanel)**:
+  1. No aaPanel, clique em **App Store**.
+  2. Procure por **Node.js version manager** e clique em Configurações.
+  3. Instale a versão **v20.x** ou **v22.x**.
+  4. Defina como a versão padrão da linha de comando (CLI).
+
 ---
 
 ## 📞 Contatos & Suporte Sysmax
