@@ -41,6 +41,35 @@ if ($requestUri === '/api/elementor-template.json' || $requestUri === '/elemento
     }
 }
 
+// 1.1 Rota de API: Download do Plugin Oficial do WordPress (.zip)
+if ($requestUri === '/api/download-wordpress-plugin' || $requestUri === '/sysmax-plugin.zip' || $requestUri === '/sysmax-landing-page.zip') {
+    $zipCandidates = [
+        __DIR__ . '/wordpress-elementor/sysmax-landing-page.zip',
+        __DIR__ . '/dist/sysmax-landing-page.zip',
+        __DIR__ . '/sysmax-landing-page.zip',
+    ];
+    $pluginZipPath = null;
+    foreach ($zipCandidates as $candidate) {
+        if (file_exists($candidate)) {
+            $pluginZipPath = $candidate;
+            break;
+        }
+    }
+
+    if ($pluginZipPath) {
+        header('Content-Type: application/zip');
+        header('Content-Disposition: attachment; filename="sysmax-landing-page.zip"');
+        header('Content-Length: ' . filesize($pluginZipPath));
+        readfile($pluginZipPath);
+        exit;
+    } else {
+        http_response_code(404);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['error' => 'Plugin do WordPress não encontrado. Execute npm run build.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+}
+
 // 2. Rota de API: Health Check do servidor aaPanel / PHP 8.5
 if ($requestUri === '/api/health') {
     header('Content-Type: application/json; charset=utf-8');
@@ -131,6 +160,11 @@ http_response_code(503);
 </head>
 <body>
     <div class="card">
+        <picture style="display: block; margin-bottom: 20px;">
+            <source media="(prefers-color-scheme: light)" srcset="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue%20(2).png" />
+            <source media="(prefers-color-scheme: dark)" srcset="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png" />
+            <img src="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png" alt="Sysmax" style="height: 42px; width: auto; margin: 0 auto; display: block;" />
+        </picture>
         <h1>Sysmax Tecnologia & Telecom</h1>
         <p>Servidor aaPanel com PHP <?= htmlspecialchars(PHP_VERSION) ?> operacional.</p>
         <p>Para gerar os arquivos estáticos de produção, execute no terminal do aaPanel:</p>

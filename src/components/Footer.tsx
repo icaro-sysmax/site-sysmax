@@ -31,12 +31,22 @@ export function Footer({ onNavigate }: FooterProps) {
               aria-label="Sysmax - Página Inicial"
             >
               {!imgError ? (
-                <img
-                  src="https://sysmax.com.br/wp-content/uploads/2026/10/Blue-2.png"
-                  alt="Sysmax Telefonia & TI"
-                  className="h-9 w-auto object-contain"
-                  onError={() => setImgError(true)}
-                />
+                <picture className="inline-block shrink-0">
+                  <source
+                    media="(prefers-color-scheme: light)"
+                    srcSet="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue%20(2).png"
+                  />
+                  <source
+                    media="(prefers-color-scheme: dark)"
+                    srcSet="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png"
+                  />
+                  <img
+                    src="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png"
+                    alt="Sysmax Telefonia & TI"
+                    className="h-9 w-auto object-contain"
+                    onError={() => setImgError(true)}
+                  />
+                </picture>
               ) : (
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">

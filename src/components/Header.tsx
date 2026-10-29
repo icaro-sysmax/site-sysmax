@@ -142,12 +142,22 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
             aria-label="Sysmax Telefonia e TI - Página Inicial"
           >
             {!imgError ? (
-              <img
-                src="https://sysmax.com.br/wp-content/uploads/2026/10/Blue-2.png"
-                alt="Sysmax Logo"
-                className="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
-                onError={() => setImgError(true)}
-              />
+              <picture className="inline-block shrink-0">
+                <source
+                  media="(prefers-color-scheme: light)"
+                  srcSet="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue%20(2).png"
+                />
+                <source
+                  media="(prefers-color-scheme: dark)"
+                  srcSet="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png"
+                />
+                <img
+                  src="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png"
+                  alt="Sysmax Tecnologia & Telecomunicações"
+                  className="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+                  onError={() => setImgError(true)}
+                />
+              </picture>
             ) : (
               <div className="flex items-center gap-2">
                 <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-cyan-500/20">

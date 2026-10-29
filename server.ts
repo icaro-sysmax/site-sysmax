@@ -43,6 +43,33 @@ app.get(['/api/elementor-template.json', '/api/elementor-template', '/elementor.
   return res.send(jsonContent);
 });
 
+// Helper to get WordPress plugin ZIP path
+function getWordPressPluginZipPath(): string | null {
+  const candidates = [
+    path.resolve(__dirname, 'wordpress-elementor/sysmax-landing-page.zip'),
+    path.resolve(__dirname, 'dist/sysmax-landing-page.zip'),
+    path.resolve(__dirname, 'sysmax-landing-page.zip'),
+  ];
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return c;
+  }
+  return null;
+}
+
+// API endpoint: Download WordPress Plugin (.zip)
+app.get(['/api/download-wordpress-plugin', '/api/wordpress-plugin.zip', '/sysmax-plugin.zip', '/sysmax-landing-page.zip'], (req: Request, res: Response) => {
+  const zipPath = getWordPressPluginZipPath();
+  if (!zipPath) {
+    return res.status(404).json({
+      error: 'Plugin do WordPress ainda não gerado. Execute npm run build para compilar.',
+    });
+  }
+
+  res.setHeader('Content-Disposition', 'attachment; filename="sysmax-landing-page.zip"');
+  res.setHeader('Content-Type', 'application/zip');
+  return res.sendFile(zipPath);
+});
+
 // API health endpoint
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({
