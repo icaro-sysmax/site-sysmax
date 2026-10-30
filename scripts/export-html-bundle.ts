@@ -157,8 +157,12 @@ const VANILLA_INTERACTIVE_SCRIPT = `
     // Ignorar submissão de formulários
     if (target.getAttribute('type') === 'submit') return;
 
-    var text = (target.textContent || '').trim().toLowerCase();
     var href = target.getAttribute('href');
+
+    // Se já é um link direto para um arquivo .html, deixa o navegador navegar nativamente!
+    if (href && (href.endsWith('.html') || href.includes('.html#'))) {
+      return;
+    }
 
     // Se já é um link para ancoragem interna (#id), realiza scroll suave
     if (href && href.startsWith('#')) {
@@ -171,11 +175,17 @@ const VANILLA_INTERACTIVE_SCRIPT = `
       return;
     }
 
+    var text = (target.textContent || '').trim().toLowerCase();
+
     // Navegação contextual para os arquivos .html físicos das páginas
     var destination = null;
-    if (text.includes('locação de equipamento') || text.includes('locacao de equipamento')) {
-      destination = 'locacao-de-equipamentos.html';
-    } else if (text.includes('outsourcing de impressão') || text.includes('outsourcing de impressao')) {
+    if (text.includes('locação') || text.includes('locacao') || text.includes('haas')) {
+      if (text.includes('impress')) {
+        destination = 'outsourcing-de-impressao.html';
+      } else {
+        destination = 'locacao-de-equipamentos.html';
+      }
+    } else if (text.includes('outsourcing') || text.includes('impressão') || text.includes('impressao')) {
       destination = 'outsourcing-de-impressao.html';
     } else if (text.includes('criação de site') || text.includes('criacao de site') || text.includes('marketing digital')) {
       destination = 'criacao-de-sites.html';
@@ -183,11 +193,11 @@ const VANILLA_INTERACTIVE_SCRIPT = `
       destination = 'index.html';
     } else if (text.includes('whatsapp calling')) {
       destination = 'whatsapp-calling.html';
-    } else if (text.includes('cloud file server')) {
+    } else if (text.includes('cloud file server') || text.includes('armazenamento & nuvem')) {
       destination = 'cloud-file-server.html';
-    } else if (text.includes('suporte de ti') || text.includes('suporte msp')) {
+    } else if (text.includes('suporte de ti') || text.includes('suporte msp') || text.includes('help desk')) {
       destination = 'suporte-ti.html';
-    } else if (text.includes('gestão de ti') || text.includes('ti gerenciada')) {
+    } else if (text.includes('gestão de ti') || text.includes('ti gerenciada') || text.includes('msp')) {
       destination = 'ti-gerenciada.html';
     } else if (text.includes('solicitar cotação') || text.includes('orçamento') || text.includes('falar com especialista') || text.includes('simular')) {
       var contactEl = document.getElementById('contato-site') || 
@@ -317,6 +327,24 @@ async function exportHtmlBundle() {
     copyDirRecursive(srcImagesDir, srcImagesMock);
   }
 
+  // Copiar logos Sysmax locais para todas as localizações estratégicas (assets e raiz)
+  const publicDir = path.resolve(rootDir, 'public');
+  const logoFiles = ['sysmax-logo-dark.png', 'sysmax-logo-light.png'];
+  for (const logo of logoFiles) {
+    const srcLogo = path.resolve(publicDir, logo);
+    if (fs.existsSync(srcLogo)) {
+      fs.copyFileSync(srcLogo, path.resolve(htmlAssetsDir, logo));
+      fs.copyFileSync(srcLogo, path.resolve(htmlVersionDir, logo));
+      if (fs.existsSync(distDir)) {
+        fs.copyFileSync(srcLogo, path.resolve(distDir, logo));
+        const distAssets = path.resolve(distDir, 'assets');
+        if (fs.existsSync(distAssets)) {
+          fs.copyFileSync(srcLogo, path.resolve(distAssets, logo));
+        }
+      }
+    }
+  }
+
   // 3. Localizar arquivos compilados de CSS e JS
   let cssFile = 'index.css';
   let jsFile = 'index.js';
@@ -409,6 +437,7 @@ async function exportHtmlBundle() {
 
     <!-- Script Vanilla para Interatividade 100% Funcional sem Dependências -->
     <script>
+      window.__SYSMAX_PAGE_VIEW__ = "${page.view}";
       ${VANILLA_INTERACTIVE_SCRIPT}
     </script>
 

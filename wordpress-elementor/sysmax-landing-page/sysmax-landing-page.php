@@ -27,8 +27,8 @@ function sysmax_render_landing_page($atts) {
     $assets_dir = SYSMAX_PLUGIN_DIR . 'assets/';
     $assets_url = SYSMAX_PLUGIN_URL . 'assets/';
 
-    $css_file = 'index-DeDo2EWf.css';
-    $js_file = 'index-DPyrN1QV.js';
+    $css_file = 'index-CvwcuY1N.css';
+    $js_file = 'index-CoACIssa.js';
 
     if (is_dir($assets_dir)) {
         $files = scandir($assets_dir);

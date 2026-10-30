@@ -1,18 +1,29 @@
-import { useState } from 'react';
 import { Phone, MessageSquare, Mail, MapPin, ShieldCheck, ArrowUp } from 'lucide-react';
+import { SysmaxLogo } from './SysmaxLogo';
+import { getServiceHtmlFile } from '../App';
 
 interface FooterProps {
   onNavigate?: (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites') => void;
 }
 
 export function Footer({ onNavigate }: FooterProps) {
-  const [imgError, setImgError] = useState(false);
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleNav = (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites') => {
+  const handleNav = (
+    e: React.MouseEvent,
+    view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites'
+  ) => {
+    if (typeof window !== 'undefined' && window.location.pathname.endsWith('.html')) {
+      const targetFile = getServiceHtmlFile(view);
+      const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+      if (currentFile !== targetFile) {
+        window.location.href = targetFile;
+        return;
+      }
+    }
+    e.preventDefault();
     if (onNavigate) {
       onNavigate(view);
     }
@@ -25,39 +36,14 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           {/* Brand & Summary (Col 1 & 2) */}
           <div className="lg:col-span-2 space-y-4">
-            <button
-              onClick={() => handleNav('telefonia')}
+            <a
+              href="index.html"
+              onClick={(e) => handleNav(e, 'telefonia')}
               className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg text-left"
               aria-label="Sysmax - Página Inicial"
             >
-              {!imgError ? (
-                <picture className="inline-block shrink-0">
-                  <source
-                    media="(prefers-color-scheme: light)"
-                    srcSet="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue%20(2).png"
-                  />
-                  <source
-                    media="(prefers-color-scheme: dark)"
-                    srcSet="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png"
-                  />
-                  <img
-                    src="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png"
-                    alt="Sysmax Telefonia & TI"
-                    className="h-9 w-auto object-contain"
-                    onError={() => setImgError(true)}
-                  />
-                </picture>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center text-slate-950 font-bold">
-                    <Phone className="w-4 h-4" />
-                  </div>
-                  <span className="text-xl font-extrabold text-white">
-                    SYS<span className="text-cyan-400">MAX</span>
-                  </span>
-                </div>
-              )}
-            </button>
+              <SysmaxLogo />
+            </a>
 
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-sm">
               Especialistas em telefonia empresarial em nuvem, PABX virtual, telecomunicações corporativas e gestão integrada de TI. Levando eficiência, economia e alta tecnologia para empresas em todo o Brasil.
@@ -96,35 +82,35 @@ export function Footer({ onNavigate }: FooterProps) {
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <button onClick={() => handleNav('whatsapp-calling')} className="hover:text-emerald-300 transition-colors text-left text-emerald-400 font-bold flex items-center gap-1.5">
+                <a href={getServiceHtmlFile('whatsapp-calling')} onClick={(e) => handleNav(e, 'whatsapp-calling')} className="hover:text-emerald-300 transition-colors text-left text-emerald-400 font-bold flex items-center gap-1.5">
                   <span>→ WhatsApp Calling</span>
                   <span className="text-[9px] bg-emerald-950 px-1 py-0.2 rounded border border-emerald-800">Novo</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('telefonia')} className="hover:text-cyan-400 transition-colors text-left">
+                <a href={getServiceHtmlFile('telefonia')} onClick={(e) => handleNav(e, 'telefonia')} className="hover:text-cyan-400 transition-colors text-left block">
                   PABX Virtual em Nuvem
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('telefonia')} className="hover:text-cyan-400 transition-colors text-left">
+                <a href={getServiceHtmlFile('telefonia')} onClick={(e) => handleNav(e, 'telefonia')} className="hover:text-cyan-400 transition-colors text-left block">
                   Telefonia VoIP Corporativa
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('telefonia')} className="hover:text-cyan-400 transition-colors text-left">
+                <a href={getServiceHtmlFile('telefonia')} onClick={(e) => handleNav(e, 'telefonia')} className="hover:text-cyan-400 transition-colors text-left block">
                   Portabilidade Numérica
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('telefonia')} className="hover:text-cyan-400 transition-colors text-left">
+                <a href={getServiceHtmlFile('telefonia')} onClick={(e) => handleNav(e, 'telefonia')} className="hover:text-cyan-400 transition-colors text-left block">
                   Números DID e 0800 Nacional
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('telefonia')} className="hover:text-cyan-400 transition-colors text-left">
+                <a href={getServiceHtmlFile('telefonia')} onClick={(e) => handleNav(e, 'telefonia')} className="hover:text-cyan-400 transition-colors text-left block">
                   Simulador de Custos VoIP
-                </button>
+                </a>
               </li>
             </ul>
           </div>
@@ -136,53 +122,53 @@ export function Footer({ onNavigate }: FooterProps) {
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <button onClick={() => handleNav('criacao-sites')} className="hover:text-emerald-300 transition-colors text-left text-emerald-400 font-bold flex items-center gap-1.5">
+                <a href={getServiceHtmlFile('criacao-sites')} onClick={(e) => handleNav(e, 'criacao-sites')} className="hover:text-emerald-300 transition-colors text-left text-emerald-400 font-bold flex items-center gap-1.5">
                   <span>→ Criação de Sites (Web Design)</span>
                   <span className="text-[9px] bg-emerald-950 px-1 py-0.2 rounded border border-emerald-800">Novo</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('locacao')} className="hover:text-emerald-300 transition-colors text-left text-emerald-400 font-semibold flex items-center gap-1.5">
+                <a href={getServiceHtmlFile('locacao')} onClick={(e) => handleNav(e, 'locacao')} className="hover:text-emerald-300 transition-colors text-left text-emerald-400 font-semibold flex items-center gap-1.5">
                   <span>→ Locação de TI (Notebooks)</span>
                   <span className="text-[9px] bg-emerald-950 px-1 py-0.2 rounded border border-emerald-800">HaaS</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('impressao')} className="hover:text-cyan-300 transition-colors text-left text-teal-300 font-semibold flex items-center gap-1.5">
+                <a href={getServiceHtmlFile('impressao')} onClick={(e) => handleNav(e, 'impressao')} className="hover:text-cyan-300 transition-colors text-left text-teal-300 font-semibold flex items-center gap-1.5">
                   <span>→ Outsourcing de Impressão</span>
                   <span className="text-[9px] bg-teal-950 px-1 py-0.2 rounded border border-teal-800">DF</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('cloud')} className="hover:text-cyan-300 transition-colors text-left text-cyan-400 font-semibold flex items-center gap-1.5">
+                <a href={getServiceHtmlFile('cloud')} onClick={(e) => handleNav(e, 'cloud')} className="hover:text-cyan-300 transition-colors text-left text-cyan-400 font-semibold flex items-center gap-1.5">
                   <span>→ Cloud File Server</span>
                   <span className="text-[9px] bg-cyan-950 px-1 py-0.2 rounded border border-cyan-800">Nuvem</span>
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('suporte-ti')} className="hover:text-cyan-400 transition-colors text-left text-cyan-300 font-semibold">
+                <a href={getServiceHtmlFile('suporte-ti')} onClick={(e) => handleNav(e, 'suporte-ti')} className="hover:text-cyan-400 transition-colors text-left text-cyan-300 font-semibold block">
                   → Suporte de TI & Help Desk
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('ti')} className="hover:text-cyan-400 transition-colors text-left text-slate-300">
+                <a href={getServiceHtmlFile('ti')} onClick={(e) => handleNav(e, 'ti')} className="hover:text-cyan-400 transition-colors text-left text-slate-300 block">
                   Visão Geral TI Gerenciada (MSP)
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('suporte-ti')} className="hover:text-cyan-400 transition-colors text-left">
+                <a href={getServiceHtmlFile('suporte-ti')} onClick={(e) => handleNav(e, 'suporte-ti')} className="hover:text-cyan-400 transition-colors text-left block">
                   Modalidades & Pacotes de Horas
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('ti')} className="hover:text-cyan-400 transition-colors text-left">
+                <a href={getServiceHtmlFile('ti')} onClick={(e) => handleNav(e, 'ti')} className="hover:text-cyan-400 transition-colors text-left block">
                   Firewall & Segurança Ativa
-                </button>
+                </a>
               </li>
               <li>
-                <button onClick={() => handleNav('ti')} className="hover:text-cyan-400 transition-colors text-left">
+                <a href={getServiceHtmlFile('ti')} onClick={(e) => handleNav(e, 'ti')} className="hover:text-cyan-400 transition-colors text-left block">
                   Backup 3-2-1 & DRP
-                </button>
+                </a>
               </li>
             </ul>
           </div>

@@ -23,32 +23,118 @@ interface AppProps {
   initialView?: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites';
 }
 
+export function getServiceHtmlFile(view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites'): string {
+  switch (view) {
+    case 'telefonia': return 'index.html';
+    case 'whatsapp-calling': return 'whatsapp-calling.html';
+    case 'suporte-ti': return 'suporte-ti.html';
+    case 'ti': return 'ti-gerenciada.html';
+    case 'cloud': return 'cloud-file-server.html';
+    case 'locacao': return 'locacao-de-equipamentos.html';
+    case 'impressao': return 'outsourcing-de-impressao.html';
+    case 'criacao-sites': return 'criacao-de-sites.html';
+    default: return 'index.html';
+  }
+}
+
 export default function App({ initialView = 'telefonia' }: AppProps = {}) {
-  const [currentView, setCurrentView] = useState<'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites'>(initialView);
+  const resolveInitialView = (): 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites' => {
+    if (typeof window === 'undefined') return initialView;
+    if ((window as any).__SYSMAX_PAGE_VIEW__) {
+      return (window as any).__SYSMAX_PAGE_VIEW__;
+    }
+
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    const params = new URLSearchParams(window.location.search);
+    const servico = params.get('servico') || params.get('page');
+
+    if (path.includes('site') || path.includes('marketing') || hash.includes('site') || hash.includes('marketing') || servico === 'criacao-sites') {
+      return 'criacao-sites';
+    }
+    if (path.includes('impress') || path.includes('outsourcing') || hash.includes('impress') || hash.includes('outsourcing') || servico === 'impressao') {
+      return 'impressao';
+    }
+    if (path.includes('locacao') || path.includes('haas') || path.includes('equipamento') || hash.includes('locacao') || servico === 'locacao') {
+      return 'locacao';
+    }
+    if (path.includes('whatsapp') || hash.includes('whatsapp') || servico === 'whatsapp-calling') {
+      return 'whatsapp-calling';
+    }
+    if (path.includes('cloud') || hash.includes('cloud') || servico === 'cloud') {
+      return 'cloud';
+    }
+    if (path.includes('suporte') || hash.includes('suporte') || servico === 'suporte-ti') {
+      return 'suporte-ti';
+    }
+    if (path.includes('ti') || hash.includes('ti') || servico === 'ti') {
+      return 'ti';
+    }
+    return initialView;
+  };
+
+  const [currentView, setCurrentView] = useState<'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites'>(resolveInitialView);
   const [selectedService, setSelectedService] = useState<string>('PABX Virtual em Nuvem');
   const [selectedExtensions, setSelectedExtensions] = useState<number>(5);
 
   useEffect(() => {
     const checkHashAndParams = () => {
+      if (typeof window === 'undefined') return;
+
       const hash = window.location.hash.toLowerCase();
       const params = new URLSearchParams(window.location.search);
       const servico = params.get('servico') || params.get('page');
 
-      if (hash.includes('site') || hash.includes('marketing') || hash.includes('webdesign') || servico === 'criacao-sites' || servico === 'marketing-digital' || servico === 'sites') {
+      // Hash ou query params prioritários
+      if (hash.includes('site') || hash.includes('marketing') || servico === 'criacao-sites') {
         setCurrentView('criacao-sites');
-      } else if (hash.includes('impress') || hash.includes('outsourcing') || servico === 'impressao' || servico === 'outsourcing-impressao' || servico === 'locacao-impressoras') {
+        return;
+      } else if (hash.includes('impress') || hash.includes('outsourcing') || servico === 'impressao') {
         setCurrentView('impressao');
-      } else if (hash.includes('locacao') || hash.includes('haas') || hash.includes('equipamento') || servico === 'locacao' || servico === 'locacao-equipamentos') {
+        return;
+      } else if (hash.includes('locacao') || hash.includes('haas') || hash.includes('equipamento') || servico === 'locacao') {
         setCurrentView('locacao');
-      } else if (hash.includes('cloud') || servico === 'cloud' || servico === 'cloud-file-server') {
+        return;
+      } else if (hash.includes('cloud') || servico === 'cloud') {
         setCurrentView('cloud');
-      } else if (hash.includes('whatsapp') || servico === 'whatsapp-calling' || servico === 'whatsapp') {
+        return;
+      } else if (hash.includes('whatsapp') || servico === 'whatsapp-calling') {
         setCurrentView('whatsapp-calling');
-      } else if (hash.includes('suporte') || servico === 'suporte-ti' || servico === 'suporte') {
+        return;
+      } else if (hash.includes('suporte') || servico === 'suporte-ti') {
         setCurrentView('suporte-ti');
-      } else if (hash.includes('ti') || servico === 'ti') {
+        return;
+      } else if (hash.includes('ti-gerenciada') || hash.includes('msp') || servico === 'ti') {
         setCurrentView('ti');
+        return;
       } else if (hash.includes('telefonia') || hash.includes('pabx') || servico === 'telefonia') {
+        setCurrentView('telefonia');
+        return;
+      }
+
+      // Se a página injetou explicitamente sua view padrão (ex: SSR / SSG estático)
+      if ((window as any).__SYSMAX_PAGE_VIEW__) {
+        setCurrentView((window as any).__SYSMAX_PAGE_VIEW__);
+        return;
+      }
+
+      // Se não há hash de serviço, respeita a rota do pathname
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes('site') || path.includes('marketing')) {
+        setCurrentView('criacao-sites');
+      } else if (path.includes('impress') || path.includes('outsourcing')) {
+        setCurrentView('impressao');
+      } else if (path.includes('locacao') || path.includes('haas') || path.includes('equipamento')) {
+        setCurrentView('locacao');
+      } else if (path.includes('cloud')) {
+        setCurrentView('cloud');
+      } else if (path.includes('whatsapp')) {
+        setCurrentView('whatsapp-calling');
+      } else if (path.includes('suporte')) {
+        setCurrentView('suporte-ti');
+      } else if (path.includes('ti-gerenciada') || path.includes('ti.html') || path.endsWith('/ti')) {
+        setCurrentView('ti');
+      } else if (path.includes('telefonia') || path.includes('index.html')) {
         setCurrentView('telefonia');
       }
     };
@@ -60,6 +146,21 @@ export default function App({ initialView = 'telefonia' }: AppProps = {}) {
 
   const handleNavigate = (view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites') => {
     setCurrentView(view);
+    const targetFile = getServiceHtmlFile(view);
+
+    // Se estiver navegando em páginas HTML estáticas locais ou no servidor
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.toLowerCase();
+      const isHtmlEnv = path.endsWith('.html') || window.location.protocol === 'file:' || path.includes('html-version');
+      if (isHtmlEnv) {
+        const currentFile = path.split('/').pop() || 'index.html';
+        if (currentFile !== targetFile) {
+          window.location.href = targetFile;
+          return;
+        }
+      }
+    }
+
     if (view === 'criacao-sites') {
       window.location.hash = 'criacao-sites';
     } else if (view === 'impressao') {

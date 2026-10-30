@@ -82,6 +82,8 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 // Serve html-version directory for direct pure static HTML access
 app.use('/html-version', express.static(path.resolve(__dirname, 'html-version')));
+app.use('/assets', express.static(path.resolve(__dirname, 'html-version/assets')));
+app.use(express.static(path.resolve(__dirname, 'public')));
 
 // Direct routes to physical HTML pages
 const staticPagesMap: Record<string, string> = {

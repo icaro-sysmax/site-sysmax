@@ -15,6 +15,8 @@ import {
   Printer,
   Globe,
 } from 'lucide-react';
+import { SysmaxLogo } from './SysmaxLogo';
+import { getServiceHtmlFile } from '../App';
 
 interface HeaderProps {
   currentView: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites';
@@ -27,8 +29,33 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(true);
-  const [imgError, setImgError] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleServiceClick = (
+    e: React.MouseEvent,
+    view: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites'
+  ) => {
+    setServicesDropdownOpen(false);
+    setMobileMenuOpen(false);
+
+    const targetFile = getServiceHtmlFile(view);
+
+    // Se estiver em ambiente HTML estático (ex: file:///, aaPanel com .html, ou pathname com .html)
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.toLowerCase();
+      const isHtmlContext = path.endsWith('.html') || window.location.protocol === 'file:';
+      if (isHtmlContext) {
+        const currentFile = path.split('/').pop() || 'index.html';
+        if (currentFile !== targetFile) {
+          window.location.href = targetFile;
+          return;
+        }
+      }
+    }
+
+    e.preventDefault();
+    onNavigate(view);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -136,44 +163,14 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-6">
           {/* Brand Logo Zone */}
-          <button
-            onClick={() => onNavigate('telefonia')}
+          <a
+            href="index.html"
+            onClick={(e) => handleServiceClick(e, 'telefonia')}
             className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-lg shrink-0 text-left cursor-pointer"
-            aria-label="Sysmax Telefonia e TI - Página Inicial"
+            aria-label="Sysmax - Página Inicial"
           >
-            {!imgError ? (
-              <picture className="inline-block shrink-0">
-                <source
-                  media="(prefers-color-scheme: light)"
-                  srcSet="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue%20(2).png"
-                />
-                <source
-                  media="(prefers-color-scheme: dark)"
-                  srcSet="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png"
-                />
-                <img
-                  src="https://apidata.sysmax.com.br/id-visual-chatwoot/Blue.png"
-                  alt="Sysmax Tecnologia & Telecomunicações"
-                  className="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
-                  onError={() => setImgError(true)}
-                />
-              </picture>
-            ) : (
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-cyan-500/20">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xl font-extrabold tracking-tight text-white leading-none">
-                    SYS<span className="text-cyan-400">MAX</span>
-                  </span>
-                  <span className="text-[10px] tracking-wider uppercase text-slate-400 font-medium">
-                    Telefonia & TI
-                  </span>
-                </div>
-              </div>
-            )}
-          </button>
+            <SysmaxLogo variant="dark" />
+          </a>
 
           {/* Navigation Links Zone with Interactive Services Sub-Menu */}
           <nav
@@ -216,11 +213,9 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                       </div>
                       <div className="mt-1 space-y-1">
                         {/* Sub-item: Telefonia Fixa */}
-                        <button
-                          onClick={() => {
-                            onNavigate('telefonia');
-                            setServicesDropdownOpen(false);
-                          }}
+                        <a
+                          href={getServiceHtmlFile('telefonia')}
+                          onClick={(e) => handleServiceClick(e, 'telefonia')}
                           className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left group ${
                             currentView === 'telefonia'
                               ? 'bg-cyan-500/10 border border-cyan-500/30'
@@ -251,14 +246,12 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                               PABX Virtual em Nuvem, Telefonia VoIP e redução de até 70% nos custos.
                             </p>
                           </div>
-                        </button>
+                        </a>
 
                         {/* Sub-item: WhatsApp Calling (Novo) */}
-                        <button
-                          onClick={() => {
-                            onNavigate('whatsapp-calling');
-                            setServicesDropdownOpen(false);
-                          }}
+                        <a
+                          href={getServiceHtmlFile('whatsapp-calling')}
+                          onClick={(e) => handleServiceClick(e, 'whatsapp-calling')}
                           className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left group ${
                             currentView === 'whatsapp-calling'
                               ? 'bg-emerald-500/10 border border-emerald-500/30'
@@ -287,7 +280,7 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                               Ligações do WhatsApp no PABX e distribuídas em ramais com URA e gravação.
                             </p>
                           </div>
-                        </button>
+                        </a>
                       </div>
                     </div>
 
@@ -300,11 +293,9 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
 
                       <div className="mt-1 space-y-1">
                         {/* Sub-item: Suporte de TI (Destaque) */}
-                        <button
-                          onClick={() => {
-                            onNavigate('suporte-ti');
-                            setServicesDropdownOpen(false);
-                          }}
+                        <a
+                          href={getServiceHtmlFile('suporte-ti')}
+                          onClick={(e) => handleServiceClick(e, 'suporte-ti')}
                           className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left group ${
                             currentView === 'suporte-ti'
                               ? 'bg-cyan-500/10 border border-cyan-500/30'
@@ -339,14 +330,12 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                               Helpdesk proativo, pacotes por hora ou mensal fixo com SLA rigoroso.
                             </p>
                           </div>
-                        </button>
+                        </a>
 
                         {/* Sub-item: Visão Geral TI Gerenciada */}
-                        <button
-                          onClick={() => {
-                            onNavigate('ti');
-                            setServicesDropdownOpen(false);
-                          }}
+                        <a
+                          href={getServiceHtmlFile('ti')}
+                          onClick={(e) => handleServiceClick(e, 'ti')}
                           className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left group ${
                             currentView === 'ti'
                               ? 'bg-cyan-500/10 border border-cyan-500/30'
@@ -377,7 +366,7 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                               Operação 360°, Firewall de borda, Backup 3-2-1 e servidores em nuvem.
                             </p>
                           </div>
-                        </button>
+                        </a>
                       </div>
                     </div>
 
@@ -390,11 +379,9 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
 
                       <div className="mt-1 space-y-1">
                         {/* Sub-item: Cloud File Server */}
-                        <button
-                          onClick={() => {
-                            onNavigate('cloud');
-                            setServicesDropdownOpen(false);
-                          }}
+                        <a
+                          href={getServiceHtmlFile('cloud')}
+                          onClick={(e) => handleServiceClick(e, 'cloud')}
                           className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left group ${
                             currentView === 'cloud'
                               ? 'bg-cyan-500/10 border border-cyan-500/30'
@@ -429,7 +416,7 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                               Servidor de arquivos em nuvem corporativo com disco Z:, anti-ransomware e LGPD.
                             </p>
                           </div>
-                        </button>
+                        </a>
                       </div>
                     </div>
 
@@ -442,11 +429,9 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
 
                       <div className="mt-1 space-y-1">
                         {/* Sub-item: Locação de TI (Notebooks, Desktops, Servidores) */}
-                        <button
-                          onClick={() => {
-                            onNavigate('locacao');
-                            setServicesDropdownOpen(false);
-                          }}
+                        <a
+                          href={getServiceHtmlFile('locacao')}
+                          onClick={(e) => handleServiceClick(e, 'locacao')}
                           className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left group ${
                             currentView === 'locacao'
                               ? 'bg-cyan-500/10 border border-cyan-500/30'
@@ -481,14 +466,12 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                               Notebooks, desktops e servidores com Swap em até 4h e 100% dedutível no Lucro Real.
                             </p>
                           </div>
-                        </button>
+                        </a>
 
                         {/* Sub-item: Outsourcing de Impressão (Multifuncionais, Toners & Bilhetagem) */}
-                        <button
-                          onClick={() => {
-                            onNavigate('impressao');
-                            setServicesDropdownOpen(false);
-                          }}
+                        <a
+                          href={getServiceHtmlFile('impressao')}
+                          onClick={(e) => handleServiceClick(e, 'impressao')}
                           className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left group ${
                             currentView === 'impressao'
                               ? 'bg-cyan-500/10 border border-cyan-500/30'
@@ -523,7 +506,7 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                               Locação de multifuncionais laser mono/color, toners 100% inclusos, bilhetagem e swap.
                             </p>
                           </div>
-                        </button>
+                        </a>
                       </div>
                     </div>
 
@@ -536,11 +519,9 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
 
                       <div className="mt-1 space-y-1">
                         {/* Sub-item: Criação de Sites */}
-                        <button
-                          onClick={() => {
-                            onNavigate('criacao-sites');
-                            setServicesDropdownOpen(false);
-                          }}
+                        <a
+                          href={getServiceHtmlFile('criacao-sites')}
+                          onClick={(e) => handleServiceClick(e, 'criacao-sites')}
                           className={`w-full flex items-start gap-3 p-2.5 rounded-xl transition-all text-left group ${
                             currentView === 'criacao-sites'
                               ? 'bg-cyan-500/10 border border-cyan-500/30'
@@ -575,7 +556,7 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                               Sites institucionais, landing pages e lojas virtuais 100% autogerenciáveis, rápidos e focados em vendas.
                             </p>
                           </div>
-                        </button>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -676,11 +657,10 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
               {mobileServicesOpen && (
                 <div className="mt-2 space-y-1.5 pt-2 border-t border-slate-800">
                   <div className="text-[10px] font-bold text-slate-400 px-2 uppercase">Telefonia Corporativa</div>
-                  <button
-                    onClick={() => {
-                      onNavigate('telefonia');
-                      setMobileMenuOpen(false);
-                    }}
+                  {/* Sub-item: Telefonia Fixa */}
+                  <a
+                    href={getServiceHtmlFile('telefonia')}
+                    onClick={(e) => handleServiceClick(e, 'telefonia')}
                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-left text-xs ${
                       currentView === 'telefonia'
                         ? 'bg-cyan-500 text-slate-950 font-bold'
@@ -694,13 +674,12 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                         VoIP, URA e redução de custos
                       </div>
                     </div>
-                  </button>
+                  </a>
 
-                  <button
-                    onClick={() => {
-                      onNavigate('whatsapp-calling');
-                      setMobileMenuOpen(false);
-                    }}
+                  {/* Sub-item: WhatsApp Calling */}
+                  <a
+                    href={getServiceHtmlFile('whatsapp-calling')}
+                    onClick={(e) => handleServiceClick(e, 'whatsapp-calling')}
                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-left text-xs ${
                       currentView === 'whatsapp-calling'
                         ? 'bg-emerald-500 text-slate-950 font-bold'
@@ -719,16 +698,14 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                         Ligações no PABX e ramais
                       </div>
                     </div>
-                  </button>
+                  </a>
 
                   <div className="text-[10px] font-bold text-cyan-400 px-2 pt-2 uppercase">TI Gerenciada</div>
 
                   {/* Sub-item: Suporte de TI */}
-                  <button
-                    onClick={() => {
-                      onNavigate('suporte-ti');
-                      setMobileMenuOpen(false);
-                    }}
+                  <a
+                    href={getServiceHtmlFile('suporte-ti')}
+                    onClick={(e) => handleServiceClick(e, 'suporte-ti')}
                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-left text-xs ${
                       currentView === 'suporte-ti'
                         ? 'bg-cyan-500 text-slate-950 font-bold'
@@ -742,14 +719,12 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                         Helpdesk N1/N2/N3, horas ou fixo
                       </div>
                     </div>
-                  </button>
+                  </a>
 
                   {/* Sub-item: Visão Geral TI Gerenciada */}
-                  <button
-                    onClick={() => {
-                      onNavigate('ti');
-                      setMobileMenuOpen(false);
-                    }}
+                  <a
+                    href={getServiceHtmlFile('ti')}
+                    onClick={(e) => handleServiceClick(e, 'ti')}
                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-left text-xs ${
                       currentView === 'ti'
                         ? 'bg-cyan-500 text-slate-950 font-bold'
@@ -763,16 +738,14 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                         Backup 3-2-1, Firewall e Cloud
                       </div>
                     </div>
-                  </button>
+                  </a>
 
                   <div className="text-[10px] font-bold text-cyan-400 px-2 pt-2 uppercase">Cloud & Nuvem</div>
 
                   {/* Sub-item: Cloud File Server */}
-                  <button
-                    onClick={() => {
-                      onNavigate('cloud');
-                      setMobileMenuOpen(false);
-                    }}
+                  <a
+                    href={getServiceHtmlFile('cloud')}
+                    onClick={(e) => handleServiceClick(e, 'cloud')}
                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-left text-xs ${
                       currentView === 'cloud'
                         ? 'bg-cyan-500 text-slate-950 font-bold'
@@ -791,16 +764,14 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                         Mapeamento Z:, anti-ransomware e LGPD
                       </div>
                     </div>
-                  </button>
+                  </a>
 
                   <div className="text-[10px] font-bold text-cyan-400 px-2 pt-2 uppercase">Locação & Outsourcing</div>
 
                   {/* Sub-item: Locação de TI */}
-                  <button
-                    onClick={() => {
-                      onNavigate('locacao');
-                      setMobileMenuOpen(false);
-                    }}
+                  <a
+                    href={getServiceHtmlFile('locacao')}
+                    onClick={(e) => handleServiceClick(e, 'locacao')}
                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-left text-xs ${
                       currentView === 'locacao'
                         ? 'bg-cyan-500 text-slate-950 font-bold'
@@ -819,14 +790,12 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                         Notebooks, desktops, servidores e Swap em 4h
                       </div>
                     </div>
-                  </button>
+                  </a>
 
                   {/* Sub-item: Outsourcing de Impressão */}
-                  <button
-                    onClick={() => {
-                      onNavigate('impressao');
-                      setMobileMenuOpen(false);
-                    }}
+                  <a
+                    href={getServiceHtmlFile('impressao')}
+                    onClick={(e) => handleServiceClick(e, 'impressao')}
                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-left text-xs ${
                       currentView === 'impressao'
                         ? 'bg-cyan-500 text-slate-950 font-bold'
@@ -845,16 +814,14 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                         Multifuncionais laser, toners inclusos e bilhetagem
                       </div>
                     </div>
-                  </button>
+                  </a>
 
                   <div className="text-[10px] font-bold text-cyan-400 px-2 pt-2 uppercase">Marketing Digital</div>
 
                   {/* Sub-item: Criação de Sites */}
-                  <button
-                    onClick={() => {
-                      onNavigate('criacao-sites');
-                      setMobileMenuOpen(false);
-                    }}
+                  <a
+                    href={getServiceHtmlFile('criacao-sites')}
+                    onClick={(e) => handleServiceClick(e, 'criacao-sites')}
                     className={`w-full flex items-center gap-3 p-2.5 rounded-lg text-left text-xs ${
                       currentView === 'criacao-sites'
                         ? 'bg-cyan-500 text-slate-950 font-bold'
@@ -873,7 +840,7 @@ export function Header({ currentView, onNavigate, onOpenQuote }: HeaderProps) {
                         Sites institucionais, landing pages e e-commerce
                       </div>
                     </div>
-                  </button>
+                  </a>
                 </div>
               )}
             </div>
