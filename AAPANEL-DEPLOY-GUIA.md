@@ -105,22 +105,38 @@ Se você deseja hospedar o site em uma hospedagem que não suporta Node.js ou pr
    npm run build
    ```
    *(Este comando gera automaticamente a pasta `html-version/` com todos os arquivos prontos).*
-2. Acesse a pasta `html-version/`:
+2. Acesse a pasta `html-version/` onde **todas as páginas foram criadas como arquivos HTML reais**:
    ```text
    html-version/
-   ├── index.html                       # Página HTML pura com SEO e scripts
-   ├── assets/                          # CSS minificado e JS com React 19
-   ├── .htaccess                        # Otimizado com cache e compressão Gzip
-   ├── index.php                        # Fallback PHP 8.5 opcional
-   └── sysmax-elementor-template.json   # Template Elementor
+   ├── index.html                       # Página Principal (Telefonia Fixa & PABX Virtual)
+   ├── telefonia.html                   # Página de Telefonia e PABX
+   ├── locacao-de-equipamentos.html     # Submenu: Locação de Equipamentos (HaaS)
+   ├── locacao.html                     # Alias para locação
+   ├── outsourcing-de-impressao.html    # Submenu: Outsourcing de Impressão e Bilhetagem
+   ├── impressao.html                   # Alias para outsourcing
+   ├── criacao-de-sites.html            # Submenu: Criação de Sites de Alta Performance
+   ├── marketing-digital.html           # Alias para Marketing Digital / Web Design
+   ├── whatsapp-calling.html            # WhatsApp Calling com ConectSIP
+   ├── cloud-file-server.html           # Cloud File Server Corporativo
+   ├── cloud.html                       # Alias para cloud
+   ├── suporte-ti.html                  # Suporte de TI Gerenciado MSP
+   ├── ti-gerenciada.html               # Gestão Completa de TI
+   ├── ti.html                          # Alias para TI
+   ├── assets/                          # Folha de estilo Tailwind compilada e imagens
+   ├── .htaccess                        # Otimizado com URLs limpas, cache e compressão Gzip
+   └── index.php                        # Roteador inteligente PHP 8.5
    ```
 3. **No aaPanel**:
-   - Crie um site selecionando **Static site** (ou PHP 8.5).
-   - Copie todo o conteúdo de `html-version/` para dentro de `/www/wwwroot/seu-site/`.
+   - Crie um site selecionando **Static site** ou **PHP 8.5**.
+   - Copie todo o conteúdo desta pasta (`html-version/`) para dentro de `/www/wwwroot/seu-site/`.
+   - Você pode acessar cada página diretamente:
+     - `https://seusite.com.br/criacao-de-sites.html` (ou `/criacao-de-sites`)
+     - `https://seusite.com.br/locacao-de-equipamentos.html` (ou `/locacao-de-equipamentos`)
+     - `https://seusite.com.br/outsourcing-de-impressao.html` (ou `/outsourcing-de-impressao`)
 4. **No cPanel / HostGator / Hostinger / Locaweb**:
    - Faça upload do conteúdo da pasta `html-version/` diretamente para a pasta `public_html/`.
-5. **No GitHub Pages / Netlify / Vercel**:
-   - Aponte a pasta raiz de publicação para `html-version`.
+5. **No seu computador localmente (sem servidor)**:
+   - Dê dois cliques em qualquer arquivo `.html` (ex: `criacao-de-sites.html` ou `index.html`) e o navegador abrirá com o CSS, fontes e calculadoras funcionando!
 
 ---
 

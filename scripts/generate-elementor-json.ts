@@ -267,6 +267,7 @@ ${headTags}
   console.log(`✅ Atualizado: ${targetHtmlWidget}`);
 
   console.log('🎉 Modelo Elementor JSON gerado com sucesso!');
+  process.exit(0);
 }
 
 generateElementorJson().catch((err) => {

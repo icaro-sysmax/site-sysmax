@@ -128,18 +128,43 @@ if ($requestUri === '/api/lead' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// 4. Servir a Aplicação Compilada em Produção (dist/index.html) ou index.html raiz
-$indexPath = __DIR__ . '/dist/index.html';
-if (!file_exists($indexPath)) {
-    $indexPath = __DIR__ . '/index.html';
-}
+// 4. Servir a Página HTML Correspondente (Multi-Page HTML Estático)
+$cleanRoute = trim($requestUri, '/');
+$routeMap = [
+    '' => 'index.html',
+    'telefonia' => 'telefonia.html',
+    'locacao-de-equipamentos' => 'locacao-de-equipamentos.html',
+    'locacao' => 'locacao-de-equipamentos.html',
+    'outsourcing-de-impressao' => 'outsourcing-de-impressao.html',
+    'impressao' => 'outsourcing-de-impressao.html',
+    'criacao-de-sites' => 'criacao-de-sites.html',
+    'marketing-digital' => 'criacao-de-sites.html',
+    'whatsapp-calling' => 'whatsapp-calling.html',
+    'cloud-file-server' => 'cloud-file-server.html',
+    'cloud' => 'cloud-file-server.html',
+    'suporte-ti' => 'suporte-ti.html',
+    'ti-gerenciada' => 'ti-gerenciada.html',
+    'ti' => 'ti-gerenciada.html',
+];
 
-if (file_exists($indexPath)) {
-    // Cache control para a página principal
-    header('Cache-Control: no-cache, must-revalidate');
-    header('Content-Type: text/html; charset=utf-8');
-    readfile($indexPath);
-    exit;
+$targetHtml = $routeMap[$cleanRoute] ?? ($cleanRoute . '.html');
+
+$candidates = [
+    __DIR__ . '/html-version/' . $targetHtml,
+    __DIR__ . '/dist/' . $targetHtml,
+    __DIR__ . '/' . $targetHtml,
+    __DIR__ . '/html-version/index.html',
+    __DIR__ . '/dist/index.html',
+    __DIR__ . '/index.html',
+];
+
+foreach ($candidates as $filePath) {
+    if (file_exists($filePath) && is_file($filePath)) {
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-Type: text/html; charset=utf-8');
+        readfile($filePath);
+        exit;
+    }
 }
 
 // Fallback amigável caso o build ainda não tenha sido executado

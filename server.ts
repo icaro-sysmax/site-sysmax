@@ -80,6 +80,43 @@ app.get('/api/health', (req: Request, res: Response) => {
   });
 });
 
+// Serve html-version directory for direct pure static HTML access
+app.use('/html-version', express.static(path.resolve(__dirname, 'html-version')));
+
+// Direct routes to physical HTML pages
+const staticPagesMap: Record<string, string> = {
+  '/criacao-de-sites': 'criacao-de-sites.html',
+  '/criacao-de-sites.html': 'criacao-de-sites.html',
+  '/marketing-digital': 'marketing-digital.html',
+  '/marketing-digital.html': 'marketing-digital.html',
+  '/locacao-de-equipamentos': 'locacao-de-equipamentos.html',
+  '/locacao-de-equipamentos.html': 'locacao-de-equipamentos.html',
+  '/locacao': 'locacao.html',
+  '/locacao.html': 'locacao.html',
+  '/outsourcing-de-impressao': 'outsourcing-de-impressao.html',
+  '/outsourcing-de-impressao.html': 'outsourcing-de-impressao.html',
+  '/impressao': 'impressao.html',
+  '/impressao.html': 'impressao.html',
+  '/whatsapp-calling': 'whatsapp-calling.html',
+  '/whatsapp-calling.html': 'whatsapp-calling.html',
+  '/cloud-file-server': 'cloud-file-server.html',
+  '/cloud-file-server.html': 'cloud-file-server.html',
+  '/suporte-ti': 'suporte-ti.html',
+  '/suporte-ti.html': 'suporte-ti.html',
+  '/ti-gerenciada': 'ti-gerenciada.html',
+  '/ti-gerenciada.html': 'ti-gerenciada.html',
+};
+
+Object.entries(staticPagesMap).forEach(([routePath, htmlFilename]) => {
+  app.get(routePath, (req: Request, res: Response, next) => {
+    const filePath = path.resolve(__dirname, 'html-version', htmlFilename);
+    if (fs.existsSync(filePath)) {
+      return res.sendFile(filePath);
+    }
+    next();
+  });
+});
+
 async function bootstrap() {
   if (!isProd) {
     // Development mode: Mount Vite middleware on the Express instance

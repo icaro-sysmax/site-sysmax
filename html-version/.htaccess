@@ -1,11 +1,28 @@
-# Sysmax - Configuração Estática para Apache / LiteSpeed
+# Sysmax - Configuração Estática para Apache / LiteSpeed / cPanel
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+
+  # Mapeamentos amigáveis sem extensão .html
+  RewriteRule ^telefonia$ telefonia.html [L]
+  RewriteRule ^locacao-de-equipamentos$ locacao-de-equipamentos.html [L]
+  RewriteRule ^locacao$ locacao-de-equipamentos.html [L]
+  RewriteRule ^outsourcing-de-impressao$ outsourcing-de-impressao.html [L]
+  RewriteRule ^impressao$ outsourcing-de-impressao.html [L]
+  RewriteRule ^criacao-de-sites$ criacao-de-sites.html [L]
+  RewriteRule ^marketing-digital$ criacao-de-sites.html [L]
+  RewriteRule ^whatsapp-calling$ whatsapp-calling.html [L]
+  RewriteRule ^cloud-file-server$ cloud-file-server.html [L]
+  RewriteRule ^suporte-ti$ suporte-ti.html [L]
+  RewriteRule ^ti-gerenciada$ ti-gerenciada.html [L]
+
+  # Se o arquivo existir, serve direto
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Fallback padrão
+  RewriteRule ^ index.html [L]
 </IfModule>
 
 # Compressão Gzip

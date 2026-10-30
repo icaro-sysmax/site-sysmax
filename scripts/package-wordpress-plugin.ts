@@ -255,6 +255,7 @@ Plugin oficial para publicar a landing page corporativa da Sysmax no WordPress e
   fs.copyFileSync(zipPath, path.resolve(rootDir, 'sysmax-landing-page.zip'));
 
   console.log(`✅ Plugin WordPress gerado e compactado em: ${zipPath}`);
+  process.exit(0);
 }
 
 packageWordPressPlugin().catch((err) => {

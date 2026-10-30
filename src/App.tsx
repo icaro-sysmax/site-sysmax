@@ -19,8 +19,12 @@ import { EquipmentRentalView } from './components/EquipmentRentalView';
 import { PrintOutsourcingView } from './components/PrintOutsourcingView';
 import { WebsiteCreationView } from './components/WebsiteCreationView';
 
-export default function App() {
-  const [currentView, setCurrentView] = useState<'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites'>('telefonia');
+interface AppProps {
+  initialView?: 'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites';
+}
+
+export default function App({ initialView = 'telefonia' }: AppProps = {}) {
+  const [currentView, setCurrentView] = useState<'telefonia' | 'whatsapp-calling' | 'ti' | 'suporte-ti' | 'cloud' | 'locacao' | 'impressao' | 'criacao-sites'>(initialView);
   const [selectedService, setSelectedService] = useState<string>('PABX Virtual em Nuvem');
   const [selectedExtensions, setSelectedExtensions] = useState<number>(5);
 
